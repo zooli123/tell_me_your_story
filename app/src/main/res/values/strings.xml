@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Tell your story!</string>
+    <string name="cry">cry</string>
+    <string name="tell_your_story">Tell your story…</string>
+    <string name="wait">Wait!</string>
+    <string name="dont_hold_back">…don\'t hold it back…</string>
+</resources>
