@@ -1,20 +1,18 @@
 package com.tellyourstory.view;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.tellyourstory.R;
 import com.tellyourstory.data.ImageChangeScheduler;
 import com.tellyourstory.data.ImageProvider;
+import com.tellyourstory.data.MusicPlayer;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
-
-import lombok.val;
 
 import static org.androidannotations.annotations.UiThread.Propagation.REUSE;
 
@@ -28,32 +26,16 @@ class MainControllerImpl implements MainContract.Controller {
     @Bean
     ImageProvider imageProvider;
 
-    private MediaPlayer mPlayer;
+    @Bean
+    MusicPlayer musicPlayer;
+
     private MainContract.Activity view;
     private String bottomText;
 
     @Override
     public void initController(final MainContract.Activity view) {
         this.view = view;
-        initMediaPlayer();
-    }
-
-    @Override
-    public void handleMusic() {
-        if (mPlayer.isPlaying()) {
-            stopMusic();
-        } else {
-            startMusic();
-        }
-    }
-
-    @Override
-    public void stopMusic() {
-        mPlayer.stop();
-        bottomText = "";
-        view.updateBottomText(bottomText);
-        initMediaPlayer();
-        view.updateTitle(getStringResource(R.string.wait));
+        musicPlayer.initMediaPlayer();
     }
 
     @Override
@@ -66,11 +48,36 @@ class MainControllerImpl implements MainContract.Controller {
         imageChangeScheduler.cancelSchedule();
     }
 
-    private void startMusic() {
-        mPlayer.start();
-        view.updateTitle(getStringResource(R.string.tell_your_story));
+    @Override
+    public void handleMusicAndView() {
+        if (musicPlayer.isPlaying()) {
+            handleStop();
+        } else {
+            handleStart();
+        }
+    }
+
+    @Override
+    public void handleStop() {
+        musicPlayer.stopMusic();
+        updateViewsWhenMusicStopped();
+    }
+
+    private void handleStart() {
+        musicPlayer.startMusic();
+        updateViewsWhenMusicIsPlaying();
+    }
+
+    private void updateViewsWhenMusicStopped() {
+        bottomText = "";
+        view.updateBottomText(bottomText);
+        view.updateTitle(getStringResource(R.string.wait));
+    }
+
+    private void updateViewsWhenMusicIsPlaying() {
         bottomText = getStringResource(R.string.dont_hold_back);
         setBottomTextWithDelay();
+        view.updateTitle(getStringResource(R.string.tell_your_story));
     }
 
     @NonNull
@@ -78,13 +85,8 @@ class MainControllerImpl implements MainContract.Controller {
         return ((Context) view).getResources().getString(resId);
     }
 
-    private void initMediaPlayer() {
-        mPlayer = MediaPlayer.create((Context) view, R.raw.sad_violin);
-    }
-
     private void setBottomTextWithDelay() {
-        val handler = new Handler();
-        handler.postDelayed(() -> updateBottomText(bottomText), DELAY_MILLIS);
+        new Handler().postDelayed(() -> updateBottomText(bottomText), DELAY_MILLIS);
     }
 
     @Background

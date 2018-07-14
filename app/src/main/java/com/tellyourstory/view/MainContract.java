@@ -3,9 +3,9 @@ package com.tellyourstory.view;
 interface MainContract {
     interface Controller {
         /**
-         * Decides whether the music should stop or start and does it
+         * Decides whether the music should stop or start and does it + applies appropriate view changes
          */
-        void handleMusic();
+        void handleMusicAndView();
 
         /**
          * Initializes controller with the given view
@@ -15,9 +15,9 @@ interface MainContract {
         void initController(Activity view);
 
         /**
-         * Stops music
+         * Stops music and changes view appropriately
          */
-        void stopMusic();
+        void handleStop();
 
         /**
          * Start changing pictures on button

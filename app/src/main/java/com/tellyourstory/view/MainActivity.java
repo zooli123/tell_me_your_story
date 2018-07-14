@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     @Override
     public void onPause() {
         super.onPause();
-        controller.stopMusic();
+        controller.handleStop();
         controller.stopChangingPictures();
     }
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
 
     @Click(R.id.cry_button)
     void startToCry() {
-        controller.handleMusic();
+        controller.handleMusicAndView();
     }
 
     @Override
