@@ -1,4 +1,4 @@
-package com.tellyourstory;
+package com.tellyourstory.view;
 
 interface MainContract {
     interface Controller {
@@ -19,8 +19,14 @@ interface MainContract {
          */
         void stopMusic();
 
+        /**
+         * Start changing pictures on button
+         */
         void startChangingPictures();
 
+        /**
+         * Stop changing pictures on button
+         */
         void stopChangingPictures();
     }
 
@@ -39,6 +45,11 @@ interface MainContract {
          */
         void updateBottomText(String text);
 
+        /**
+         * Update picture on cry button
+         *
+         * @param resId the resource id of the picture to set
+         */
         void updateCryButton(int resId);
     }
 }

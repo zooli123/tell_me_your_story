@@ -1,8 +1,10 @@
-package com.tellyourstory;
+package com.tellyourstory.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.tellyourstory.R;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;

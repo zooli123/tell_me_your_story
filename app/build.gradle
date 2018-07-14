@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 def AndroidAnnotationsVersion = '4.3.1'
+def LombokVersion = '1.16.18'
 android {
     compileSdkVersion 25
     buildToolsVersion '27.0.3'
@@ -24,9 +25,9 @@ android {
 }
 
 dependencies {
-//    annotationProcessor 'org.projectlombok:lombok:1.18.0'
+    annotationProcessor "org.projectlombok:lombok:$LombokVersion"
     annotationProcessor "org.androidannotations:androidannotations:$AndroidAnnotationsVersion"
-//    implementation 'org.projectlombok:lombok:1.18.0'
+    compileOnly "org.projectlombok:lombok:$LombokVersion"
     implementation "org.androidannotations:androidannotations-api:$AndroidAnnotationsVersion"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {

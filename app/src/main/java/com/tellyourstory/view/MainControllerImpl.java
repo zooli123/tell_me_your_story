@@ -1,36 +1,40 @@
-package com.tellyourstory;
+package com.tellyourstory.view;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.tellyourstory.R;
+import com.tellyourstory.data.ImageChangeScheduler;
+import com.tellyourstory.data.ImageProvider;
+
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
 
-import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import lombok.val;
 
-import static java.util.Arrays.asList;
 import static org.androidannotations.annotations.UiThread.Propagation.REUSE;
 
 @EBean
 class MainControllerImpl implements MainContract.Controller {
     private static final int DELAY_MILLIS = 3000;
-    private static final int PICTURE_DELAY_MILLIS = 2000;
+
+    @Bean
+    ImageChangeScheduler imageChangeScheduler;
+
+    @Bean
+    ImageProvider imageProvider;
+
     private MediaPlayer mPlayer;
     private MainContract.Activity view;
     private String bottomText;
-    private Timer timer;
-    private List<Integer> IMAGE_COLLECTION;
 
     @Override
     public void initController(final MainContract.Activity view) {
         this.view = view;
-        IMAGE_COLLECTION = buildImageCollection();
         initMediaPlayer();
     }
 
@@ -59,7 +63,7 @@ class MainControllerImpl implements MainContract.Controller {
 
     @Override
     public void stopChangingPictures() {
-        timer.cancel();
+        imageChangeScheduler.cancelSchedule();
     }
 
     private void startMusic() {
@@ -79,24 +83,13 @@ class MainControllerImpl implements MainContract.Controller {
     }
 
     private void setBottomTextWithDelay() {
-        final Handler handler = new Handler();
+        val handler = new Handler();
         handler.postDelayed(() -> updateBottomText(bottomText), DELAY_MILLIS);
     }
 
     @Background
     void setCryButtonImageWithDelay() {
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                updateCryButton();
-            }
-        }, 0, PICTURE_DELAY_MILLIS);
-    }
-
-    @UiThread(propagation = REUSE)
-    void updateCryButton() {
-        view.updateCryButton(selectRandom(IMAGE_COLLECTION));
+        imageChangeScheduler.schedule(__ -> updateCryButton());
     }
 
     @UiThread(propagation = REUSE)
@@ -104,17 +97,8 @@ class MainControllerImpl implements MainContract.Controller {
         view.updateBottomText(text);
     }
 
-    private Integer selectRandom(final List<Integer> imageCollection) {
-        final Random random = new Random();
-        return imageCollection.get(random.nextInt((imageCollection.size())));
-    }
-
-    private List<Integer> buildImageCollection() {
-        return asList(
-                R.drawable.cry,
-                R.drawable.dawson_crying_mini,
-                R.drawable.sad_frog_mini,
-                R.drawable.cry_lake
-        );
+    @UiThread(propagation = REUSE)
+    void updateCryButton() {
+        view.updateCryButton(imageProvider.provideImageResId());
     }
 }
