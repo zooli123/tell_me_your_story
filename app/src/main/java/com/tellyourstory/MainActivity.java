@@ -1,6 +1,7 @@
 package com.tellyourstory;
 
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -21,6 +22,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     @ViewById(R.id.bottom_textview)
     TextView bottomText;
 
+    @ViewById(R.id.cry_button)
+    ImageButton cryBtn;
+
     @AfterViews
     public void init() {
         controller.initController(this);
@@ -31,6 +35,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     public void onPause() {
         super.onPause();
         controller.stopMusic();
+        controller.stopChangingPictures();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        controller.startChangingPictures();
     }
 
     @Click(R.id.cry_button)
@@ -47,4 +58,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     public void updateBottomText(final String text) {
         bottomText.setText(text);
     }
+
+    @Override
+    public void updateCryButton(final int resId) {
+        cryBtn.setImageResource(resId);
+    }
+
 }

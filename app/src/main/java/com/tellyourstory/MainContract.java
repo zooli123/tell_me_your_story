@@ -18,6 +18,10 @@ interface MainContract {
          * Stops music
          */
         void stopMusic();
+
+        void startChangingPictures();
+
+        void stopChangingPictures();
     }
 
     interface Activity {
@@ -34,5 +38,7 @@ interface MainContract {
          * @param text string to be set to the bottom text view
          */
         void updateBottomText(String text);
+
+        void updateCryButton(int resId);
     }
 }
